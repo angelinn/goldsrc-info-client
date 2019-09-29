@@ -4,7 +4,7 @@
 
 namespace hlds
 {
-	bool SocketClient::QueryUDPSocket(const char* ip, short port, const char* message, char* response)
+	bool SocketClient::QueryUDPSocket(const char* ip, short port, const char* message, size_t messageSize, char* response)
 	{
 		WSADATA wsaData;
 		SOCKET server = INVALID_SOCKET;
@@ -32,7 +32,7 @@ namespace hlds
 		address.sin_addr.S_un.S_addr = inet_addr(ip);
 		address.sin_port = htons(port);
 
-		int result = sendto(server, message, strlen(message) + 1, 0, (SOCKADDR*)&address, slen);
+		int result = sendto(server, message, messageSize, 0, (SOCKADDR*)&address, slen);
 		if (result == SOCKET_ERROR)
 		{
 			printf("socket error: %d\n", WSAGetLastError());
@@ -41,7 +41,6 @@ namespace hlds
 
 		char buf[2048];
 		memset(buf, 0, 2048);
-
 
 		result = recvfrom(server, buf, 2048, 0, (SOCKADDR*)&address, &slen);
 		if (result == SOCKET_ERROR)
