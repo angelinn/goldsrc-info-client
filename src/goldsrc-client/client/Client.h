@@ -9,6 +9,8 @@ namespace hlds
 {
 	class Client
 	{
+		static const char* INFO_REQUEST;
+
 	public:
 		DLLEXPORT void Main();
 		DLLEXPORT InfoResponse QueryInfo(const char* ip, short port);

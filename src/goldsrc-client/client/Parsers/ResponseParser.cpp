@@ -12,7 +12,7 @@ namespace hlds
 		infoResponse.header = *(reinterpret_cast<const byte *>(response));
 		response += sizeof(byte);
 
-		infoResponse.protocol = *(reinterpret_cast<const byte *>(response));
+		infoResponse.protocol = *(reinterpret_cast<const byte *>(response)) + 0;
 		response += sizeof(byte);
 
 		infoResponse.name = std::string(response);
@@ -30,25 +30,25 @@ namespace hlds
 		infoResponse.appID = *(reinterpret_cast<const short *>(response));
 		response += sizeof(short);
 
-		infoResponse.players = *(reinterpret_cast<const byte *>(response));
+		infoResponse.players = *(reinterpret_cast<const byte *>(response)) + 0;
 		response += sizeof(byte);
 
-		infoResponse.maxPlayers = *(reinterpret_cast<const byte *>(response));
+		infoResponse.maxPlayers = *(reinterpret_cast<const byte *>(response)) + 0;
 		response += sizeof(byte);
 
-		infoResponse.bots = *(reinterpret_cast<const byte *>(response));
+		infoResponse.bots = *(reinterpret_cast<const byte *>(response)) + 0;
 		response += sizeof(byte);
 
-		infoResponse.serverType = *(reinterpret_cast<const byte *>(response));
+		infoResponse.serverType = *(reinterpret_cast<const byte *>(response)) + 0;
 		response += sizeof(byte);
 
-		infoResponse.environment = *(reinterpret_cast<const byte *>(response));
+		infoResponse.environment = *(reinterpret_cast<const byte *>(response)) + 0;
 		response += sizeof(byte);
 
-		infoResponse.visibility = *(reinterpret_cast<const byte *>(response));
+		infoResponse.visibility = *(reinterpret_cast<const byte *>(response)) + 0;
 		response += sizeof(byte);
 
-		infoResponse.vac = *(reinterpret_cast<const byte *>(response));
+		infoResponse.vac = *(reinterpret_cast<const byte *>(response)) + 0;
 		response += sizeof(byte);
 
 		return infoResponse;

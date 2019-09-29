@@ -9,18 +9,18 @@ namespace hlds
 	struct InfoResponse
 	{
 		byte header;
-		byte protocol;
+		int protocol;
 		std::string name;
 		std::string map;
 		std::string folder;
 		std::string game;
 		short appID;
-		byte players;
-		byte maxPlayers;
-		byte bots;
-		byte serverType;
-		byte environment;
-		byte visibility;
-		byte vac;
+		int players;
+		int maxPlayers;
+		int bots;
+		int serverType;
+		int environment;
+		int visibility;
+		int vac;
 	};
 }
