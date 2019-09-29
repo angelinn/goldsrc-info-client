@@ -1,3 +1,10 @@
-// client.cpp : Defines the exported functions for the DLL application.
-//
+#include "Client.h"
+#include <cstdio>
 
+namespace hlds
+{
+	void Client::Main()
+	{
+		printf("Hi from client dll.");
+	}
+}
