@@ -150,11 +150,15 @@
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Networking\SocketClient.cpp" />
+    <ClCompile Include="Parsers\ResponseParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Models\InfoResponse.h" />
+    <ClInclude Include="Networking\SocketClient.h" />
+    <ClInclude Include="Parsers\ResponseParser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

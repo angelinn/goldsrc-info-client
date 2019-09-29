@@ -5,6 +5,5 @@
 int main()
 {
 	hlds::Client client;
-	client.Main();
-    std::cout << "Hello World!\n"; 
+	client.QueryInfo("40.115.46.129", 27015);
 }

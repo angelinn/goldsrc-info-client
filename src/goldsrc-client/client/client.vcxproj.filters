@@ -3,6 +3,12 @@
   <ItemGroup>
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Networking\SocketClient.cpp">
+      <Filter>Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="Parsers\ResponseParser.cpp">
+      <Filter>Parsers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h" />
@@ -10,10 +16,22 @@
     <ClInclude Include="Models\InfoResponse.h">
       <Filter>Models</Filter>
     </ClInclude>
+    <ClInclude Include="Networking\SocketClient.h">
+      <Filter>Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="Parsers\ResponseParser.h">
+      <Filter>Parsers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Models">
       <UniqueIdentifier>{95e0223c-a236-4fe5-a42b-76d791b025da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Networking">
+      <UniqueIdentifier>{545ac198-b8a4-4045-8c56-e44c5c31f183}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parsers">
+      <UniqueIdentifier>{207834f0-8582-40d3-8454-77968b662896}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
