@@ -5,7 +5,7 @@
 
 namespace hlds
 {
-	std::unique_ptr<char> SocketClient::QueryUDPSocket(const char* ip, short port, const char* message, size_t messageSize)
+	std::unique_ptr<char[]> SocketClient::QueryUDPSocket(const char* ip, short port, const char* message, size_t messageSize)
 	{
 		WSADATA wsaData;
 		SOCKET server = INVALID_SOCKET;
@@ -40,10 +40,10 @@ namespace hlds
 			return false;
 		}
 
-		char buf[2048];
-		memset(buf, 0, 2048);
+		char responseBuffer[MESSAGE_BUFFER_SIZE];
+		memset(responseBuffer, 0, MESSAGE_BUFFER_SIZE);
 
-		result = recvfrom(server, buf, 2048, 0, (SOCKADDR*)&address, &slen);
+		result = recvfrom(server, responseBuffer, MESSAGE_BUFFER_SIZE, 0, (SOCKADDR*)&address, &slen);
 		if (result == SOCKET_ERROR)
 		{
 			printf("socket error: %d\n", WSAGetLastError());
@@ -53,8 +53,8 @@ namespace hlds
 		closesocket(server);
 		WSACleanup();
 
-		std::unique_ptr<char> responsePtr = std::make_unique<char>(result);
-		memcpy(responsePtr.get(), buf, result);
+		std::unique_ptr<char[]> responsePtr = std::make_unique<char[]>(result);
+		memcpy(responsePtr.get(), responseBuffer, result);
 
 		return responsePtr;
 	}

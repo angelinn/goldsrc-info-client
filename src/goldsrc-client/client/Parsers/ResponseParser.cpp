@@ -3,7 +3,7 @@
 
 namespace hlds
 {
-	InfoResponse ResponseParser::ParseInfoResponse(const char* response)
+	InfoResponse ResponseParser::ParseInfoResponse(const char* response) const
 	{
 		InfoResponse infoResponse = { 0 };
 
@@ -56,4 +56,16 @@ namespace hlds
 		return infoResponse;
 	}
 
+	int ResponseParser::ParseAuthNumber(const char* response) const
+	{
+		response += 4 * sizeof(byte);
+		if (*response != 0x41)
+			return -1;
+
+		++response;
+		int authNumber = 0;
+		memcpy(&authNumber, response, sizeof(int));
+
+		return authNumber;
+	}
 }
