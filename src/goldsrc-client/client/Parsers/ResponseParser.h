@@ -7,6 +7,6 @@ namespace hlds
 	class ResponseParser
 	{
 	public:
-		InfoResponse ParseInfoResponse(const char* response, size_t size);
+		InfoResponse ParseInfoResponse(const char* response);
 	};
 }

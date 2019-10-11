@@ -13,19 +13,21 @@ namespace hlds
 
 	InfoResponse Client::QueryInfo(const char* ip, short port)
 	{
-		char response[2048];
-		bool result = socketClient.QueryUDPSocket(ip, port, INFO_REQUEST, strlen(INFO_REQUEST) + 1, response);
-
-		InfoResponse infoResponse = responseParser.ParseInfoResponse(response, 2048);
+		std::unique_ptr<char> response = socketClient.QueryUDPSocket(ip, port, INFO_REQUEST, strlen(INFO_REQUEST) + 1);
+		if (!response)
+			throw std::runtime_error("invalid response");
+		
+		InfoResponse infoResponse = responseParser.ParseInfoResponse(response.get());
 		return infoResponse;
 	}
 
 	InfoResponse Client::QueryRules(const char* ip, short port)
 	{
-		char response[2048];
-		bool result = socketClient.QueryUDPSocket(ip, port, CHALLENGE_REQUEST, strlen(CHALLENGE_REQUEST), response);
+		std::unique_ptr<char> response = socketClient.QueryUDPSocket(ip, port, CHALLENGE_REQUEST, strlen(CHALLENGE_REQUEST));
+		if (!response)
+			throw std::runtime_error("invalid response");
 
-		InfoResponse infoResponse = responseParser.ParseInfoResponse(response, 2048);
+		InfoResponse infoResponse = responseParser.ParseInfoResponse(response.get());
 		return infoResponse;
 	}
 }

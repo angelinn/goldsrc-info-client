@@ -3,7 +3,7 @@
 
 namespace hlds
 {
-	InfoResponse ResponseParser::ParseInfoResponse(const char* response, size_t size)
+	InfoResponse ResponseParser::ParseInfoResponse(const char* response)
 	{
 		InfoResponse infoResponse = { 0 };
 
@@ -50,6 +50,8 @@ namespace hlds
 
 		infoResponse.vac = *(reinterpret_cast<const byte *>(response)) + 0;
 		response += sizeof(byte);
+
+		infoResponse.isValid = true;
 
 		return infoResponse;
 	}

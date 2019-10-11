@@ -22,5 +22,6 @@ namespace hlds
 		int environment;
 		int visibility;
 		int vac;
+		bool isValid;
 	};
 }

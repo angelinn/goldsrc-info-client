@@ -1,10 +1,11 @@
 #include "SocketClient.h"
 #include <cstdio>
 #include <winsock2.h>
+#include <memory>
 
 namespace hlds
 {
-	bool SocketClient::QueryUDPSocket(const char* ip, short port, const char* message, size_t messageSize, char* response)
+	std::unique_ptr<char> SocketClient::QueryUDPSocket(const char* ip, short port, const char* message, size_t messageSize)
 	{
 		WSADATA wsaData;
 		SOCKET server = INVALID_SOCKET;
@@ -52,7 +53,9 @@ namespace hlds
 		closesocket(server);
 		WSACleanup();
 
-		memcpy(response, buf, 2048);
-		return true;
+		std::unique_ptr<char> responsePtr = std::make_unique<char>(result);
+		memcpy(responsePtr.get(), buf, result);
+
+		return responsePtr;
 	}
 }
