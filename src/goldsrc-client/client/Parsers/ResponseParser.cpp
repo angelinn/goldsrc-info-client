@@ -75,7 +75,7 @@ namespace hlds
 		short rulesNumber = 0;
 		memcpy(&rulesNumber, response, sizeof(short));
 
-		response += sizeof(int);
+		response += sizeof(short);
 
 		std::vector<std::pair<std::string, std::string>> rules;
 		for (int i = 0; i < rulesNumber; ++i)
