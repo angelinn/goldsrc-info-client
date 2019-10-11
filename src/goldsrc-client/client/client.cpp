@@ -21,7 +21,7 @@ namespace hlds
 		return infoResponse;
 	}
 
-	InfoResponse Client::QueryRules(const char* ip, short port)
+	std::vector<std::pair<std::string, std::string>> Client::QueryRules(const char* ip, short port)
 	{
 		std::unique_ptr<char[]> response = socketClient.QueryUDPSocket(ip, port, CHALLENGE_REQUEST, strlen(CHALLENGE_REQUEST));
 		if (!response)
@@ -43,10 +43,9 @@ namespace hlds
 		
 		memcpy(ptrCopy, reinterpret_cast<char *>(&authNumber), sizeof(int));
 		
-		std::unique_ptr<char[]> responseSecond = socketClient.QueryUDPSocket(ip, port, rulesRequest, strlen(CHALLENGE_REQUEST));
-		char* plain = responseSecond.get();
-		//InfoResponse infoResponse = responseParser.ParseInfoResponse(response.get());
-		//return infoResponse;
-		return InfoResponse();
+		std::unique_ptr<char[]> rulesResponse = socketClient.QueryUDPSocket(ip, port, rulesRequest, 9);
+		std::vector<std::pair<std::string, std::string>> rules = responseParser.ParseRules(rulesResponse.get());
+
+		return rules;
 	}
 }

@@ -68,4 +68,27 @@ namespace hlds
 
 		return authNumber;
 	}
+
+	std::vector<std::pair<std::string, std::string>> ResponseParser::ParseRules(const char* response) const
+	{
+		response += 14;
+		short rulesNumber = 0;
+		memcpy(&rulesNumber, response, sizeof(short));
+
+		response += sizeof(int);
+
+		std::vector<std::pair<std::string, std::string>> rules;
+		for (int i = 0; i < rulesNumber; ++i)
+		{
+			std::string rule = std::string(response);
+			response += rule.size() + 1;
+
+			std::string value = std::string(response);
+			response += value.size() + 1;
+
+			rules.push_back(std::make_pair(rule, value));
+		}
+
+		return std::move(rules);
+	}
 }
