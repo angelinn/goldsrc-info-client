@@ -1,5 +1,6 @@
 #include "ResponseParser.h"
 #include "../Models/InfoResponse.h"
+#include "../Models/QueryResponse.h"
 
 namespace hlds
 {
@@ -69,22 +70,41 @@ namespace hlds
 		return authNumber;
 	}
 
-	std::vector<std::pair<std::string, std::string>> ResponseParser::ParseRules(const char* response) const
+	std::vector<std::pair<std::string, std::string>> ResponseParser::ParseRules(const std::vector<QueryResponse>& responses) const
 	{
-		response += 14;
-		short rulesNumber = 0;
-		memcpy(&rulesNumber, response, sizeof(short));
+		size_t copySize = responses[0].size - 14 + sizeof(short);
 
-		response += sizeof(short);
+		char* firstResponse = responses[0].response.get();
+		firstResponse += 14;
+		short rulesNumber = 0;
+		memcpy(&rulesNumber, firstResponse, sizeof(short));
+
+		firstResponse += sizeof(short);
+
+		std::unique_ptr<char[]> response = std::make_unique<char[]>(1400 * responses.size());
+		memcpy(response.get(), firstResponse, copySize);
+
+		size_t baseSize = copySize;
+
+		for (int i = 1; i < responses.size(); ++i)
+		{
+			copySize = responses[i].size - 9;
+			firstResponse = responses[i].response.get();
+			firstResponse += 9;
+
+			memcpy(response.get() + baseSize, firstResponse, copySize);
+		}
+
+		firstResponse = response.get();
 
 		std::vector<std::pair<std::string, std::string>> rules;
 		for (int i = 0; i < rulesNumber; ++i)
 		{
-			std::string rule = std::string(response);
-			response += rule.size() + 1;
+			std::string rule = std::string(firstResponse);
+			firstResponse += rule.size() + 1;
 
-			std::string value = std::string(response);
-			response += value.size() + 1;
+			std::string value = std::string(firstResponse);
+			firstResponse += value.size() + 1;
 
 			rules.push_back(std::make_pair(rule, value));
 		}
