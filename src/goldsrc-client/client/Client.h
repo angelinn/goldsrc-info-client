@@ -10,8 +10,10 @@ namespace hlds
 	class Client
 	{
 		static const char* INFO_REQUEST;
-		static const char* RULES_CHALLENGE_REQUEST;
-		static const char* PLAYERS_CHALLENGE_REQUEST;
+
+		static const int RULES_REQUEST_ID = 0x56;
+		static const int PLAYERS_REQUEST_ID = 0x55;
+		static const int REQUEST_NUMBER = 0xFF;
 
 	public:
 		DLLEXPORT Client(const char* ip, short port);

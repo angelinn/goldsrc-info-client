@@ -5,8 +5,6 @@
 namespace hlds
 {
 	const char* Client::INFO_REQUEST = "\xff\xff\xff\xffTSource Engine Query\0";
-	const char* Client::RULES_CHALLENGE_REQUEST = "\xff\xff\xff\xffV\xff\xff\xff\xff";
-	const char* Client::PLAYERS_CHALLENGE_REQUEST = "\xff\xff\xff\xffU\xff\xff\xff\xff";
 
 	void Client::Main()
 	{
@@ -31,7 +29,10 @@ namespace hlds
 
 	RulesVector Client::QueryRules() const
 	{
-		std::vector<QueryResponse> responses = socketClient.QueryUDPSocket(ip, port, RULES_CHALLENGE_REQUEST, strlen(RULES_CHALLENGE_REQUEST));
+		size_t rulesRequestSize = 0;
+
+		std::unique_ptr<char[]> numberRequest = GenerateRulesRequest(REQUEST_NUMBER, rulesRequestSize);
+		std::vector<QueryResponse> responses = socketClient.QueryUDPSocket(ip, port, numberRequest.get(), rulesRequestSize);
 		if (!responses[0].response)
 			throw std::runtime_error("invalid response");
 
@@ -39,7 +40,7 @@ namespace hlds
 		if (authNumber == -1)
 			throw std::runtime_error("invalid response");
 
-		size_t rulesRequestSize = 0;
+		rulesRequestSize = 0;
 		std::unique_ptr<char[]> rulesRequest = GenerateRulesRequest(authNumber, rulesRequestSize);
 
 		std::vector<QueryResponse> rulesResponses = socketClient.QueryUDPSocket(ip, port, rulesRequest.get(), rulesRequestSize);
@@ -50,18 +51,20 @@ namespace hlds
 
 	InfoResponse Client::QueryPlayers() const
 	{
-		std::vector<QueryResponse> responses = socketClient.QueryUDPSocket(ip, port, PLAYERS_CHALLENGE_REQUEST, strlen(PLAYERS_CHALLENGE_REQUEST));
-		if (!responses[0].response)
+		size_t playersRequestSize = 0;
+
+		std::unique_ptr<char[]> numberRequest = GeneratePlayersRequest(REQUEST_NUMBER, playersRequestSize);
+		std::vector<QueryResponse> responses = socketClient.QueryUDPSocket(ip, port, numberRequest.get(), playersRequestSize);		if (!responses[0].response)
 			throw std::runtime_error("invalid response");
 
 		int authNumber = responseParser.ParseAuthNumber(responses[0].response.get());
 		if (authNumber == -1)
 			throw std::runtime_error("invalid response");
 
-		size_t rulesRequestSize = 0;
-		std::unique_ptr<char[]> playersRequest = GeneratePlayersRequest(authNumber, rulesRequestSize);
+		playersRequestSize = 0;
+		std::unique_ptr<char[]> playersRequest = GeneratePlayersRequest(authNumber, playersRequestSize);
 
-		std::vector<QueryResponse> playerResponses = socketClient.QueryUDPSocket(ip, port, playersRequest.get(), rulesRequestSize);
+		std::vector<QueryResponse> playerResponses = socketClient.QueryUDPSocket(ip, port, playersRequest.get(), playersRequestSize);
 		char* ptr = playerResponses[0].response.get();
 
 		return InfoResponse();
@@ -69,12 +72,12 @@ namespace hlds
 
 	std::unique_ptr<char[]> Client::GenerateRulesRequest(int authNumber, size_t& messageSize) const
 	{
-		return GenerateRequest(0x56, authNumber, messageSize);
+		return GenerateRequest(RULES_REQUEST_ID, authNumber, messageSize);
 	}
 
 	std::unique_ptr<char[]> Client::GeneratePlayersRequest(int authNumber, size_t& messageSize) const
 	{
-		return GenerateRequest(0x55, authNumber, messageSize);
+		return GenerateRequest(PLAYERS_REQUEST_ID, authNumber, messageSize);
 	}
 
 	std::unique_ptr<char[]> Client::GenerateRequest(char type, int authNumber, size_t& messageSize) const
