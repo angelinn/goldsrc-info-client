@@ -8,4 +8,7 @@ int main()
 	auto rules = client.QueryRules();
 	for (auto& rule : rules)
 		std::cout << rule.first << " = " << rule.second << std::endl;
+
+	size_t ping = client.QueryPing();
+	std::cout << "Ping: " << ping << std::endl;
 }

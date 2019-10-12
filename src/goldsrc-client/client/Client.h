@@ -10,6 +10,7 @@ namespace hlds
 	class Client
 	{
 		static const char* INFO_REQUEST;
+		static const char* PING_REQUEST;
 
 		static const int RULES_REQUEST_ID = 0x56;
 		static const int PLAYERS_REQUEST_ID = 0x55;
@@ -23,6 +24,7 @@ namespace hlds
 		DLLEXPORT InfoResponse QueryInfo() const;
 		DLLEXPORT RulesVector QueryRules() const;
 		DLLEXPORT InfoResponse QueryPlayers() const;
+		DLLEXPORT size_t QueryPing() const;
 
 	private:
 		std::unique_ptr<char[]> GenerateRulesRequest(int authNumber, size_t& messageSize) const;

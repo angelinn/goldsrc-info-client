@@ -1,10 +1,13 @@
 #include "Client.h"
 #include "Models/QueryResponse.h"
+
 #include <cstdio>
+#include <chrono>
 
 namespace hlds
 {
 	const char* Client::INFO_REQUEST = "\xff\xff\xff\xffTSource Engine Query\0";
+	const char* Client::PING_REQUEST = "\xff\xff\xff\xffi";
 
 	void Client::Main()
 	{
@@ -54,7 +57,8 @@ namespace hlds
 		size_t playersRequestSize = 0;
 
 		std::unique_ptr<char[]> numberRequest = GeneratePlayersRequest(REQUEST_NUMBER, playersRequestSize);
-		std::vector<QueryResponse> responses = socketClient.QueryUDPSocket(ip, port, numberRequest.get(), playersRequestSize);		if (!responses[0].response)
+		std::vector<QueryResponse> responses = socketClient.QueryUDPSocket(ip, port, numberRequest.get(), playersRequestSize);
+		if (!responses[0].response)
 			throw std::runtime_error("invalid response");
 
 		int authNumber = responseParser.ParseAuthNumber(responses[0].response.get());
@@ -68,6 +72,15 @@ namespace hlds
 		char* ptr = playerResponses[0].response.get();
 
 		return InfoResponse();
+	}
+
+	size_t Client::QueryPing() const
+	{
+		auto before = std::chrono::high_resolution_clock::now();
+		socketClient.QueryUDPSocket(ip, port, PING_REQUEST, strlen(PING_REQUEST));
+		auto after = std::chrono::high_resolution_clock::now();
+
+		return std::chrono::duration_cast<std::chrono::milliseconds>(after - before).count();
 	}
 
 	std::unique_ptr<char[]> Client::GenerateRulesRequest(int authNumber, size_t& messageSize) const
