@@ -22,7 +22,7 @@ namespace hlds
 		return infoResponse;
 	}
 
-	std::vector<std::pair<std::string, std::string>> Client::QueryRules(const char* ip, short port)
+	RulesVector Client::QueryRules(const char* ip, short port)
 	{
 		auto responses = socketClient.QueryUDPSocket(ip, port, CHALLENGE_REQUEST, strlen(CHALLENGE_REQUEST));
 		if (!responses[0].response)
@@ -32,21 +32,27 @@ namespace hlds
 		if (authNumber == -1)
 			throw std::runtime_error("invalid response");
 
-		char rulesRequest[4 + 1 + 4];
+		size_t rulesRequestSize = 0;
+		std::unique_ptr<char[]> rulesRequest = GenerateRulesRequest(authNumber, rulesRequestSize);
+
+		std::vector<QueryResponse> rulesResponses = socketClient.QueryUDPSocket(ip, port, rulesRequest.get(), rulesRequestSize);
+		RulesVector rules = responseParser.ParseRules(rulesResponses);
+
+		return rules;
+	}
+
+	std::unique_ptr<char[]> Client::GenerateRulesRequest(int authNumber, size_t& messageSize)
+	{
+		messageSize = 4 + 1 + 4;
+
+		std::unique_ptr<char[]> rulesRequest = std::make_unique<char[]>(messageSize);
 		rulesRequest[0] = 0xff;
 		rulesRequest[1] = 0xff;
 		rulesRequest[2] = 0xff;
 		rulesRequest[3] = 0xff;
 		rulesRequest[4] = 0x56;
 
-		char* ptrCopy = rulesRequest;
-		ptrCopy += 5;
-
-		memcpy(ptrCopy, reinterpret_cast<char *>(&authNumber), sizeof(int));
-
-		std::vector<QueryResponse> rulesResponses = socketClient.QueryUDPSocket(ip, port, rulesRequest, 9);
-		std::vector<std::pair<std::string, std::string>> rules = responseParser.ParseRules(rulesResponses);
-
-		return rules;
+		memcpy(rulesRequest.get() + 5, reinterpret_cast<char *>(&authNumber), sizeof(int));
+		return rulesRequest;
 	}
 }

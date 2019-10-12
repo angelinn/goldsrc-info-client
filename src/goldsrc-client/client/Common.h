@@ -8,7 +8,11 @@
 #define DLLEXPORT __declspec(dllimport)  
 #endif
 
+#include <vector>
+#include <string>
+
 namespace hlds
 {
+	typedef std::vector<std::pair<std::string, std::string>> RulesVector;
 	const int PACKET_SIZE = 1400;
 }

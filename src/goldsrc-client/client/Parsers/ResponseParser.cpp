@@ -71,7 +71,7 @@ namespace hlds
 		return authNumber;
 	}
 
-	std::vector<std::pair<std::string, std::string>> ResponseParser::ParseRules(const std::vector<QueryResponse>& responses) const
+	RulesVector ResponseParser::ParseRules(const std::vector<QueryResponse>& responses) const
 	{
 		size_t baseSize = responses[0].size - FIRST_PACKET_HEADER_BYTES + RULES_COUNT_SIZE;
 		
@@ -99,7 +99,7 @@ namespace hlds
 
 		iterator = response.get();
 
-		std::vector<std::pair<std::string, std::string>> rules;
+		RulesVector rules;
 		for (int i = 0; i < rulesNumber; ++i)
 		{
 			std::string rule = std::string(iterator);

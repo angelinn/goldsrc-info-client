@@ -1,7 +1,6 @@
 #pragma once
 
-#include <vector>
-#include <string>
+#include "../Common.h"
 
 namespace hlds
 {
@@ -17,6 +16,6 @@ namespace hlds
 	public:
 		InfoResponse ParseInfoResponse(const char* response) const;
 		int ParseAuthNumber(const char* response) const;
-		std::vector<std::pair<std::string, std::string>> ParseRules(const std::vector<QueryResponse> &) const;
+		RulesVector ParseRules(const std::vector<QueryResponse> &) const;
 	};
 }

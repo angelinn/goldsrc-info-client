@@ -15,7 +15,10 @@ namespace hlds
 	public:
 		DLLEXPORT void Main();
 		DLLEXPORT InfoResponse QueryInfo(const char* ip, short port);
-		DLLEXPORT std::vector<std::pair<std::string, std::string>> QueryRules(const char* ip, short port);
+		DLLEXPORT RulesVector QueryRules(const char* ip, short port);
+
+	private:
+		std::unique_ptr<char[]> GenerateRulesRequest(int authNumber, size_t& messageSize);
 
 	private:
 		SocketClient socketClient;
