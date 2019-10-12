@@ -1,12 +1,15 @@
 #include "SocketClient.h"
+#include "../Models/QueryResponse.h"
 #include <cstdio>
 #include <winsock2.h>
 #include <memory>
 
 namespace hlds
 {
-	std::unique_ptr<char[]> SocketClient::QueryUDPSocket(const char* ip, short port, const char* message, size_t messageSize)
+	std::vector<QueryResponse> SocketClient::QueryUDPSocket(const char* ip, short port, const char* message, size_t messageSize)
 	{
+		std::vector<QueryResponse> responses;
+
 		WSADATA wsaData;
 		SOCKET server = INVALID_SOCKET;
 		SOCKADDR_IN address;
@@ -15,7 +18,7 @@ namespace hlds
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 		{
 			printf("Failed.Error Code : %d", WSAGetLastError());
-			return false;
+			return responses;
 		}
 
 		printf("Initialised.\n");
@@ -24,7 +27,7 @@ namespace hlds
 		if (server == INVALID_SOCKET)
 		{
 			printf("Could not create socket: %d\n", WSAGetLastError());
-			return false;
+			return responses;
 		}
 
 		int slen = sizeof(address);
@@ -37,25 +40,29 @@ namespace hlds
 		if (result == SOCKET_ERROR)
 		{
 			printf("socket error: %d\n", WSAGetLastError());
-			return false;
+			return responses;
 		}
 
 		char responseBuffer[MESSAGE_BUFFER_SIZE];
 		memset(responseBuffer, 0, MESSAGE_BUFFER_SIZE);
+		
+		int packetMode = -1;
 
-		result = recvfrom(server, responseBuffer, MESSAGE_BUFFER_SIZE, 0, (SOCKADDR*)&address, &slen);
-		if (result == SOCKET_ERROR)
+		do
 		{
-			printf("socket error: %d\n", WSAGetLastError());
-			return false;
-		}
+			result = recvfrom(server, responseBuffer, MESSAGE_BUFFER_SIZE, 0, (SOCKADDR*)&address, &slen);
+			if (result == SOCKET_ERROR)
+			{
+				printf("socket error: %d\n", WSAGetLastError());
+				return responses;
+			}
+
+			responses.push_back(QueryResponse(responseBuffer, result));
+		} while (result == MESSAGE_BUFFER_SIZE);
 
 		closesocket(server);
 		WSACleanup();
 
-		std::unique_ptr<char[]> responsePtr = std::make_unique<char[]>(result);
-		memcpy(responsePtr.get(), responseBuffer, result);
-
-		return responsePtr;
+		return responses;
 	}
 }

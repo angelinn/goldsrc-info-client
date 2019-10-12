@@ -22,6 +22,9 @@
     <ClInclude Include="Parsers\ResponseParser.h">
       <Filter>Parsers</Filter>
     </ClInclude>
+    <ClInclude Include="Models\QueryResponse.h">
+      <Filter>Models</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Models">
