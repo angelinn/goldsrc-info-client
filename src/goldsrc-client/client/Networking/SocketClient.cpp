@@ -25,11 +25,14 @@ namespace hlds
 		printf("Initialised.\n");
 
 		server = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
 		if (server == INVALID_SOCKET)
 		{
 			printf("Could not create socket: %d\n", WSAGetLastError());
 			return responses;
 		}
+
+		setsockopt(server, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char *>(&TIMEOUT), sizeof(TIMEOUT));
 
 		int slen = sizeof(address);
 
