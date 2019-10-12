@@ -1,5 +1,6 @@
 #include "SocketClient.h"
 #include "../Models/QueryResponse.h"
+#include "../Common.h"
 #include <cstdio>
 #include <winsock2.h>
 #include <memory>
@@ -43,14 +44,14 @@ namespace hlds
 			return responses;
 		}
 
-		char responseBuffer[MESSAGE_BUFFER_SIZE];
-		memset(responseBuffer, 0, MESSAGE_BUFFER_SIZE);
+		char responseBuffer[PACKET_SIZE];
+		memset(responseBuffer, 0, PACKET_SIZE);
 		
 		int packetMode = -1;
 
 		do
 		{
-			result = recvfrom(server, responseBuffer, MESSAGE_BUFFER_SIZE, 0, (SOCKADDR*)&address, &slen);
+			result = recvfrom(server, responseBuffer, PACKET_SIZE, 0, (SOCKADDR*)&address, &slen);
 			if (result == SOCKET_ERROR)
 			{
 				printf("socket error: %d\n", WSAGetLastError());
@@ -58,7 +59,7 @@ namespace hlds
 			}
 
 			responses.push_back(QueryResponse(responseBuffer, result));
-		} while (result == MESSAGE_BUFFER_SIZE);
+		} while (result == PACKET_SIZE);
 
 		closesocket(server);
 		WSACleanup();

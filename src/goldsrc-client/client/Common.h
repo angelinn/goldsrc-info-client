@@ -7,3 +7,8 @@
 /*Enabled as "import" in the Client side for using already created dll file*/
 #define DLLEXPORT __declspec(dllimport)  
 #endif
+
+namespace hlds
+{
+	const int PACKET_SIZE = 1400;
+}
