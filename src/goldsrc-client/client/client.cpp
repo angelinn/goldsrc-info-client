@@ -21,11 +21,11 @@ namespace hlds
 
 	InfoResponse Client::QueryInfo() const
 	{
-		QueryResponse& response = socketClient.QueryUDPSocket(ip, port, INFO_REQUEST, strlen(INFO_REQUEST) + 1)[0];
-		if (!response.response)
+		std::vector<QueryResponse> responses = socketClient.QueryUDPSocket(ip, port, INFO_REQUEST, strlen(INFO_REQUEST) + 1);
+		if (!responses[0].response)
 			throw std::runtime_error("invalid response");
 
-		InfoResponse infoResponse = responseParser.ParseInfoResponse(response.response.get());
+		InfoResponse infoResponse = responseParser.ParseInfoResponse(responses[0].response.get());
 		return infoResponse;
 	}
 
