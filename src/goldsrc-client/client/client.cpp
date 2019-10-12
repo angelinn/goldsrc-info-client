@@ -12,7 +12,13 @@ namespace hlds
 		printf("Hi from client dll.");
 	}
 
-	InfoResponse Client::QueryInfo(const char* ip, short port)
+	Client::Client(const char* ip, short port)
+	{
+		strcpy(this->ip, ip);
+		this->port = port;
+	}
+
+	InfoResponse Client::QueryInfo()
 	{
 		QueryResponse& response = socketClient.QueryUDPSocket(ip, port, INFO_REQUEST, strlen(INFO_REQUEST) + 1)[0];
 		if (!response.response)
@@ -22,7 +28,7 @@ namespace hlds
 		return infoResponse;
 	}
 
-	RulesVector Client::QueryRules(const char* ip, short port)
+	RulesVector Client::QueryRules()
 	{
 		auto responses = socketClient.QueryUDPSocket(ip, port, CHALLENGE_REQUEST, strlen(CHALLENGE_REQUEST));
 		if (!responses[0].response)

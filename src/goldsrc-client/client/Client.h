@@ -13,9 +13,12 @@ namespace hlds
 		static const char* CHALLENGE_REQUEST;
 
 	public:
+		DLLEXPORT Client(const char* ip, short port);
+
+	public:
 		DLLEXPORT void Main();
-		DLLEXPORT InfoResponse QueryInfo(const char* ip, short port);
-		DLLEXPORT RulesVector QueryRules(const char* ip, short port);
+		DLLEXPORT InfoResponse QueryInfo();
+		DLLEXPORT RulesVector QueryRules();
 
 	private:
 		std::unique_ptr<char[]> GenerateRulesRequest(int authNumber, size_t& messageSize);
@@ -23,5 +26,9 @@ namespace hlds
 	private:
 		SocketClient socketClient;
 		ResponseParser responseParser;
+
+	private:
+		char ip[16];
+		short port;
 	};
 }
