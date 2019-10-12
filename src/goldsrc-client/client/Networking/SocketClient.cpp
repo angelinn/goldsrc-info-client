@@ -7,7 +7,7 @@
 
 namespace hlds
 {
-	std::vector<QueryResponse> SocketClient::QueryUDPSocket(const char* ip, short port, const char* message, size_t messageSize)
+	std::vector<QueryResponse> SocketClient::QueryUDPSocket(const char* ip, short port, const char* message, size_t messageSize) const
 	{
 		std::vector<QueryResponse> responses;
 
