@@ -11,4 +11,10 @@ int main()
 
 	size_t ping = client.QueryPing();
 	std::cout << "Ping: " << ping << std::endl;
+
+	std::vector<hlds::PlayerData> players = client.QueryPlayers();
+	std::cout << "Players count: " << players.size() << std::endl;
+
+	for (auto& player : players)
+		std::cout << "[" << player.index << "] " << player.name << ", " << player.score << " frags, " << player.duration << std::endl;
 }

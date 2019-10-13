@@ -6,6 +6,7 @@ namespace hlds
 {
 	struct InfoResponse;
 	struct QueryResponse;
+	struct PlayerData;
 
 	class ResponseParser
 	{
@@ -17,5 +18,6 @@ namespace hlds
 		InfoResponse ParseInfoResponse(const char* response) const;
 		int ParseAuthNumber(const char* response) const;
 		RulesVector ParseRules(const std::vector<QueryResponse> &) const;
+		std::vector<PlayerData> ParsePlayers(const QueryResponse &) const;
 	};
 }

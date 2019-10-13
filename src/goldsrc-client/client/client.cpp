@@ -52,7 +52,7 @@ namespace hlds
 		return rules;
 	}
 
-	InfoResponse Client::QueryPlayers() const
+	std::vector<PlayerData> Client::QueryPlayers() const
 	{
 		size_t playersRequestSize = 0;
 
@@ -69,9 +69,7 @@ namespace hlds
 		std::unique_ptr<char[]> playersRequest = GeneratePlayersRequest(authNumber, playersRequestSize);
 
 		std::vector<QueryResponse> playerResponses = socketClient.QueryUDPSocket(ip, port, playersRequest.get(), playersRequestSize);
-		char* ptr = playerResponses[0].response.get();
-
-		return InfoResponse();
+		return responseParser.ParsePlayers(playerResponses[0]);
 	}
 
 	size_t Client::QueryPing() const
@@ -104,7 +102,7 @@ namespace hlds
 		rulesRequest[3] = 0xff;
 		rulesRequest[4] = type;
 
-		memcpy(rulesRequest.get() + 5, reinterpret_cast<char *>(&authNumber), sizeof(int));
+		memcpy(rulesRequest.get() + 5, reinterpret_cast<const char *>(&authNumber), sizeof(int));
 		return rulesRequest;
 	}
 }

@@ -3,6 +3,7 @@
 #include "Common.h"
 #include "Networking/SocketClient.h"
 #include "Models/InfoResponse.h"
+#include "Models/PlayerData.h"
 #include "Parsers/ResponseParser.h"
 
 namespace hlds
@@ -23,7 +24,7 @@ namespace hlds
 		DLLEXPORT void Main();
 		DLLEXPORT InfoResponse QueryInfo() const;
 		DLLEXPORT RulesVector QueryRules() const;
-		DLLEXPORT InfoResponse QueryPlayers() const;
+		DLLEXPORT std::vector<PlayerData> QueryPlayers() const;
 		DLLEXPORT size_t QueryPing() const;
 
 	private:

@@ -25,6 +25,9 @@
     <ClInclude Include="Models\QueryResponse.h">
       <Filter>Models</Filter>
     </ClInclude>
+    <ClInclude Include="Models\PlayerData.h">
+      <Filter>Models</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Models">

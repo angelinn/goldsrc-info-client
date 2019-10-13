@@ -1,6 +1,7 @@
 #include "ResponseParser.h"
 #include "../Models/InfoResponse.h"
 #include "../Models/QueryResponse.h"
+#include "../Models/PlayerData.h"
 #include "../Common.h"
 
 namespace hlds
@@ -74,7 +75,7 @@ namespace hlds
 	RulesVector ResponseParser::ParseRules(const std::vector<QueryResponse>& responses) const
 	{
 		size_t baseSize = responses[0].size - FIRST_PACKET_HEADER_BYTES + RULES_COUNT_SIZE;
-		
+
 		char* iterator = responses[0].response.get();
 		iterator += FIRST_PACKET_HEADER_BYTES;
 		short rulesNumber = 0;
@@ -112,5 +113,40 @@ namespace hlds
 		}
 
 		return std::move(rules);
+	}
+
+	std::vector<PlayerData> ResponseParser::ParsePlayers(const QueryResponse& response) const
+	{
+		const char* iterator = response.response.get();
+		iterator += sizeof(int);
+		char id = *iterator;
+
+		if (id != 0x44)
+			throw std::runtime_error("wrong request");
+
+		++iterator;
+		int playersCount = *iterator;
+		++iterator;
+
+		std::vector<PlayerData> players;
+
+		for (int i = 0; i < playersCount; ++i)
+		{
+			PlayerData player = { 0 };
+			player.index = *iterator;
+			++iterator;
+
+			player.name = std::string(iterator);
+			iterator += player.name.size() + 1;
+
+			memcpy(&player.score, iterator, sizeof(long));
+			iterator += sizeof(long);
+
+			memcpy(&player.duration, iterator, sizeof(float));
+
+			players.push_back(std::move(player));
+		}
+
+		return std::move(players);
 	}
 }
