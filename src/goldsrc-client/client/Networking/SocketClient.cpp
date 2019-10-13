@@ -1,6 +1,7 @@
 #include "SocketClient.h"
 #include "../Models/QueryResponse.h"
 #include "../Common.h"
+#include "../Exceptions/SocketException.h"
 #include <cstdio>
 #include <winsock2.h>
 #include <memory>
@@ -15,22 +16,13 @@ namespace hlds
 		SOCKET server = INVALID_SOCKET;
 		SOCKADDR_IN address;
 
-		printf("\nInitialising Winsock...");
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
-		{
-			printf("Failed.Error Code : %d", WSAGetLastError());
-			return responses;
-		}
-
-		printf("Initialised.\n");
+			ThrowSocketError("Could not initialize winsock");
 
 		server = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
 		if (server == INVALID_SOCKET)
-		{
-			printf("Could not create socket: %d\n", WSAGetLastError());
-			return responses;
-		}
+			ThrowSocketError("Could not create socket");
 
 		setsockopt(server, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char *>(&TIMEOUT), sizeof(TIMEOUT));
 
@@ -42,24 +34,18 @@ namespace hlds
 
 		int result = sendto(server, message, messageSize, 0, (SOCKADDR*)&address, slen);
 		if (result == SOCKET_ERROR)
-		{
-			printf("socket error: %d\n", WSAGetLastError());
-			return responses;
-		}
+			ThrowSocketError("Socket error");
 
 		char responseBuffer[PACKET_SIZE];
 		memset(responseBuffer, 0, PACKET_SIZE);
-		
+
 		int packetMode = -1;
 
 		do
 		{
 			result = recvfrom(server, responseBuffer, PACKET_SIZE, 0, (SOCKADDR*)&address, &slen);
 			if (result == SOCKET_ERROR)
-			{
-				printf("socket error: %d\n", WSAGetLastError());
-				return responses;
-			}
+				ThrowSocketError("Socket error");
 
 			responses.push_back(QueryResponse(responseBuffer, result));
 		} while (result == PACKET_SIZE);
@@ -68,5 +54,15 @@ namespace hlds
 		WSACleanup();
 
 		return responses;
+	}
+
+	void SocketClient::ThrowSocketError(const char* message) const
+	{
+		std::string messageWithError(message);
+
+		messageWithError += ", ";
+		messageWithError += std::to_string(WSAGetLastError());
+
+		throw SocketException(messageWithError.c_str());
 	}
 }

@@ -13,5 +13,8 @@ namespace hlds
 
 	public:
 		std::vector<QueryResponse> QueryUDPSocket(const char* ip, short port, const char* message, size_t messageSize) const;
+
+	private:
+		void ThrowSocketError(const char* message) const;
 	};
 }

@@ -28,6 +28,9 @@
     <ClInclude Include="Models\PlayerData.h">
       <Filter>Models</Filter>
     </ClInclude>
+    <ClInclude Include="Exceptions\SocketException.h">
+      <Filter>Exceptions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Models">
@@ -38,6 +41,9 @@
     </Filter>
     <Filter Include="Parsers">
       <UniqueIdentifier>{207834f0-8582-40d3-8454-77968b662896}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Exceptions">
+      <UniqueIdentifier>{db533c5b-5d08-401d-a9c2-c4ba5ce48bec}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
